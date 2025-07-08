@@ -1,0 +1,106 @@
+---
+title: "pizza sales analysis"
+author: "Mehrub Hasan"
+format: html
+editor: visual
+---
+# 1. Load nessesary library
+```{r setup, include=FALSE}
+
+#set global options for code chunks
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 7)
+
+#load library
+library(tidyverse)
+library(janitor)
+library(readxl)
+library(knitr)
+
+```
+
+# 2. Load the dataset
+```{r load_data}
+pizza_data <- read_excel("Pizza Sales.xlsx")
+
+#briefly inspect the data 
+glimpse(pizza_data)
+summary(pizza_data)
+head(pizza_data)
+```
+
+# 3. clean column names 
+```{r clean_names}
+pizza_data <- pizza_data %>% clean_names()
+glimpse(pizza_data)
+```
+
+# 4. data type conversion  and features engineering
+
+```{r data_prep}
+pizza_data_cleaned <- pizza_data
+```
+
+# 5. data visulization 
+```{r}
+table(pizza_data$pizza_category, pizza_data$pizza_size) %>% knitr::kable(caption = "Pizza sales based on category")
+```
+
+
+# ploting data 
+```{r}
+ggplot(data = pizza_data, aes(x = total_price))+
+  geom_histogram(bins=10)
+```
+```{r}
+tabulated_data <- table(pizza_data$pizza_name, pizza_data$pizza_size) 
+tabulated_data %>% knitr::kable(caption = "Pizza sales based on pizza names")
+
+```
+
+# new table
+```{r}
+table(pizza_data$pizza_ingredients)  %>% knitr::kable(caption = "pizza sales based on ingredients") 
+```
+
+# pizz salse table 4
+```{r}
+table(pizza_data$quantity) %>% kable(caption = "Sales based on quantity")
+```
+so it is found that 98% pizza sold are single quantity, than 0.1% are 2 quantity and 3 and 4 are rarley sold 
+### quantity and category 
+```{r}
+table(pizza_data$quantity, pizza_data$pizza_category)
+```
+
+
+### table order date
+```{r}
+table(pizza_data$pizza_category, pizza_data$pizza_name) %>% kable()
+```
+
+### group by 
+
+```{r}
+pizza_data %>% 
+  group_by(pizza_size) %>% 
+  count()
+  
+```
+
+### summary statistics 
+```{r}
+summary(pizza_data) %>% kable()
+```
+
+
+# table which time most order 
+```{r}
+table(pizza_data$unit_price, pizza_data$pizza_category ) %>% kable()
+```
+
+```{r}
+pizza_name_count <- pizza_data %>% 
+  group_by(pizza_name, unit_price) %>% 
+  count()
+```
+
